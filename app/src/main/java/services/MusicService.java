@@ -45,6 +45,14 @@ public class MusicService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
 
+            int position = intent.getIntExtra(Config.KEY_PREVIOUS_OR_NEXT, -1);
+            if (position != -1) {
+                songPosition = position;
+                // play next song or previous song
+                playNewSong();
+                return;
+            }
+
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();
             } else {

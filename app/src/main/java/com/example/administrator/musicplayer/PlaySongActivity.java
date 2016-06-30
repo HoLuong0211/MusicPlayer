@@ -99,9 +99,25 @@ public class PlaySongActivity extends AppCompatActivity implements SeekBar.OnSee
     }
 
     public void previous(View v) {
+        if (songPosition == 0)
+            return;
+        songPosition = songPosition - 1;
+        selectedSong = mSongs.get(songPosition);
+        setDefaultInfo();
+        Intent previousIntent = new Intent(Config.ACTION_PLAY_MUSIC);
+        previousIntent.putExtra(Config.KEY_PREVIOUS_OR_NEXT, songPosition);
+        sendBroadcast(previousIntent);
     }
 
     public void next(View v) {
+        if (songPosition == mSongs.size() - 1)
+            return;
+        songPosition = songPosition + 1;
+        selectedSong = mSongs.get(songPosition);
+        setDefaultInfo();
+        Intent nextIntent = new Intent(Config.ACTION_PLAY_MUSIC);
+        nextIntent.putExtra(Config.KEY_PREVIOUS_OR_NEXT, songPosition);
+        sendBroadcast(nextIntent);
     }
 
     public void backward(View v) {
