@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -18,9 +19,24 @@ import utils.Config;
  */
 public class MusicService extends Service {
 
+    private static final long delayMillis = 100;
+
     private MediaPlayer mediaPlayer;
     private List<Song> mSongs;
     private int songPosition;
+
+    private Handler mHandler = new Handler();
+    private Runnable updateSongTime = new Runnable() {
+        @Override
+        public void run() {
+            if(mediaPlayer!=null && mediaPlayer.isPlaying()){
+                Intent updateSongIntent = new Intent(Config.ACTION_UPATE_SONG_TIME);
+                updateSongIntent.putExtra(Config.KEY_CURRENT_TIME, mediaPlayer.getCurrentPosition());
+                sendBroadcast(updateSongIntent);
+                mHandler.postDelayed(this, delayMillis );
+            }
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -37,6 +53,7 @@ public class MusicService extends Service {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepare();
             mediaPlayer.start();
+            mHandler.postDelayed(updateSongTime, delayMillis );
         } catch (IOException e) {
             e.printStackTrace();
         }

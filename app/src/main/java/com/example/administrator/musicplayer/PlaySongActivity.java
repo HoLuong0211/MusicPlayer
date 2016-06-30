@@ -1,6 +1,9 @@
 package com.example.administrator.musicplayer;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +28,18 @@ public class PlaySongActivity extends AppCompatActivity{
     private int songDuration;
     private List<Song> mSongs;
 
+    private BroadcastReceiver updateSongReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int currentTime = intent.getIntExtra(Config.KEY_CURRENT_TIME, 0);
+            if (currentTime / 1000 == songDuration / 1000) {
+                next(btnPlay);
+            }
+            tvCurrentTime.setText(Config.getTextFormat(currentTime));
+            seekBar.setProgress(currentTime);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +60,18 @@ public class PlaySongActivity extends AppCompatActivity{
         Intent playSongIntent = new Intent(PlaySongActivity.this, MusicService.class);
         playSongIntent.putExtra(Config.KEY_SONG_POSITION, songPosition);
         startService(playSongIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(updateSongReceiver, new IntentFilter(Config.ACTION_UPATE_SONG_TIME));
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(updateSongReceiver);
+        super.onPause();
     }
 
     public void play(View v) {
