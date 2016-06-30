@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Music Player</string>
+    <string name="action_settings">Settings</string>
+    <string name="time">00:00</string>
+    <string name="list_songs">DANH SÁCH BÀI HÁT</string>
+    <string name="song_name">Tên bài hát</string>
 </resources>
