@@ -28,6 +28,8 @@ public class PlaySongActivity extends AppCompatActivity{
     private int songDuration;
     private List<Song> mSongs;
 
+    private boolean isPlaying;
+
     private BroadcastReceiver updateSongReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -54,6 +56,7 @@ public class PlaySongActivity extends AppCompatActivity{
         songPosition = getIntent().getIntExtra(Config.KEY_SONG_POSITION, 0);
         mSongs = Config.getListSongs(this);
         selectedSong = mSongs.get(songPosition);
+        isPlaying = true;
         setDefaultInfo();
 
         // playing music
@@ -75,6 +78,14 @@ public class PlaySongActivity extends AppCompatActivity{
     }
 
     public void play(View v) {
+        isPlaying = !isPlaying;
+        if (isPlaying) {
+            btnPlay.setImageResource(android.R.drawable.ic_media_pause);
+        } else {
+            btnPlay.setImageResource(android.R.drawable.ic_media_play);
+        }
+        Intent playIntent = new Intent(Config.ACTION_PLAY_MUSIC);
+        sendBroadcast(playIntent);
     }
 
     public void previous(View v) {
@@ -93,6 +104,10 @@ public class PlaySongActivity extends AppCompatActivity{
         String songTitle = selectedSong.getTitle();
         songDuration = selectedSong.getDuration();
 
+        if (isPlaying)
+            btnPlay.setImageResource(android.R.drawable.ic_media_pause);
+        else
+            btnPlay.setImageResource(android.R.drawable.ic_media_play);
         tvSongName.setText(songTitle);
         tvCurrentTime.setText(Config.getTextFormat(0));
         tvTotalTime.setText(Config.getTextFormat(songDuration));

@@ -1,7 +1,10 @@
 package services;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -38,10 +41,32 @@ public class MusicService extends Service {
         }
     };
 
+    private BroadcastReceiver playMediaPlayerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            } else {
+                mediaPlayer.start();
+                mHandler.postDelayed(updateSongTime, delayMillis);
+            }
+
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
         mediaPlayer = new MediaPlayer();
+        registerReceiver(playMediaPlayerReceiver, new IntentFilter(Config.ACTION_PLAY_MUSIC));
+    }
+
+    @Override
+    public void onDestroy() {
+        mediaPlayer.release();
+        unregisterReceiver(playMediaPlayerReceiver);
+        super.onDestroy();
     }
 
     @Override
