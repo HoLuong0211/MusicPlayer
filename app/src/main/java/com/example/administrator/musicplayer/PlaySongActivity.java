@@ -34,8 +34,8 @@ public class PlaySongActivity extends AppCompatActivity implements SeekBar.OnSee
         @Override
         public void onReceive(Context context, Intent intent) {
             int currentTime = intent.getIntExtra(Config.KEY_CURRENT_TIME, 0);
-            if (currentTime / 1000 == songDuration / 1000) {
-                next(btnPlay);
+            if (songDuration/1000 == currentTime/1000 || songDuration - currentTime <= 50) {
+                next(btnPlay);   // auto play next song
             }
             tvCurrentTime.setText(Config.getTextFormat(currentTime));
             seekBar.setProgress(currentTime);
