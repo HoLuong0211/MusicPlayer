@@ -17,7 +17,7 @@ import models.Song;
 import services.MusicService;
 import utils.Config;
 
-public class PlaySongActivity extends AppCompatActivity{
+public class PlaySongActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener{
 
     private SeekBar seekBar;
     private TextView tvCurrentTime, tvTotalTime, tvSongName;
@@ -135,6 +135,34 @@ public class PlaySongActivity extends AppCompatActivity{
         tvTotalTime.setText(Config.getTextFormat(songDuration));
         seekBar.setMax(songDuration);
         seekBar.setProgress(0);
+        seekBar.setOnSeekBarChangeListener(this);
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        int progress = seekBar.getProgress();
+        // if seek to the end of song
+        if (progress / 1000 == songDuration / 1000) {
+            if (isPlaying)
+                next(btnPlay);
+            else{
+                tvCurrentTime.setText(Config.getTextFormat(0));
+                seekBar.setProgress(0);
+            }
+            return;
+        }
+        Intent seekMediaIntent = new Intent(Config.ACTION_SEEK_MEDIA_PLAYER);
+        seekMediaIntent.putExtra(Config.KEY_SEEKBAR_PROGRESS, progress);
+        sendBroadcast(seekMediaIntent);
+    }
 }

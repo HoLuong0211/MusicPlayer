@@ -55,17 +55,37 @@ public class MusicService extends Service {
         }
     };
 
+    private BroadcastReceiver seekMediaPlayerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int seekBarProcess = intent.getIntExtra(Config.KEY_SEEKBAR_PROGRESS,-1);
+            if(seekBarProcess == -1){
+                // backward or forward
+                if (intent.getBooleanExtra(Config.KEY_BACKWARD_OR_FORWARD, false))
+                    forward();
+                else
+                    backward();
+            }else{
+                // seek Media Player to seekBarProcess
+                mediaPlayer.seekTo(seekBarProcess);
+            }
+
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
         mediaPlayer = new MediaPlayer();
         registerReceiver(playMediaPlayerReceiver, new IntentFilter(Config.ACTION_PLAY_MUSIC));
+        registerReceiver(seekMediaPlayerReceiver, new IntentFilter(Config.ACTION_SEEK_MEDIA_PLAYER));
     }
 
     @Override
     public void onDestroy() {
         mediaPlayer.release();
         unregisterReceiver(playMediaPlayerReceiver);
+        unregisterReceiver(seekMediaPlayerReceiver);
         super.onDestroy();
     }
 
@@ -109,6 +129,18 @@ public class MusicService extends Service {
             mHandler.postDelayed(updateSongTime, delayMillis);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void backward() {
+        if (mediaPlayer.getCurrentPosition() / 1000 - Config.BACKWARD_TIME / 1000 >= 0) {
+            mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - Config.BACKWARD_TIME);
+        }
+    }
+
+    private void forward() {
+        if (mediaPlayer.getCurrentPosition() / 1000 + Config.FORWARD_TIME / 1000 <= mediaPlayer.getDuration() / 1000) {
+            mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + Config.FORWARD_TIME);
         }
     }
 }
