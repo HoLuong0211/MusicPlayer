@@ -73,14 +73,20 @@ public class MusicService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         songPosition = intent.getIntExtra(Config.KEY_SONG_POSITION, 0);
         mSongs = Config.getListSongs(getApplicationContext());
-        try {
-            mediaPlayer.setDataSource(mSongs.get(songPosition).getPath());
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-            mHandler.postDelayed(updateSongTime, delayMillis );
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(!mediaPlayer.isPlaying()){
+            // Service starts for the first time
+            try {
+                mediaPlayer.setDataSource(mSongs.get(songPosition).getPath());
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+                mHandler.postDelayed(updateSongTime, delayMillis);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            // Service is running => play selected song
+            playNewSong();
         }
         return START_NOT_STICKY;
     }
@@ -89,5 +95,20 @@ public class MusicService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    private void playNewSong() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(mSongs.get(songPosition).getPath());
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            mHandler.postDelayed(updateSongTime, delayMillis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

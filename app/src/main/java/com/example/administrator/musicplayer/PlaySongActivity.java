@@ -77,6 +77,16 @@ public class PlaySongActivity extends AppCompatActivity{
         super.onPause();
     }
 
+    @Override
+    public void onBackPressed() {
+        if(!isPlaying){
+            // stop music
+            Intent playSongIntent = new Intent(PlaySongActivity.this, MusicService.class);
+            stopService(playSongIntent);
+        }
+        this.finish();
+    }
+
     public void play(View v) {
         isPlaying = !isPlaying;
         if (isPlaying) {
