@@ -27,6 +27,8 @@ public class Config {
     public static final String ACTION_PLAY_MUSIC = "com.example.administrator.playmusic.action.PLAY_MUSIC";
     public static final String ACTION_BACKWARD_OR_FORWARD = "com.example.administrator.playmusic.action.BACKWARD_OR_FORWARD";
 
+    public static int OPEN_ACTIVITY_PLAY_SONG = 1;
+
     public static String getTextFormat(long timeInMilliseconds) {
         long minutes = TimeUnit.MILLISECONDS.toMinutes((long) timeInMilliseconds);
         long seconds = TimeUnit.MILLISECONDS.toSeconds((long) timeInMilliseconds)
