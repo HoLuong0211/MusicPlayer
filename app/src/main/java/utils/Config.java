@@ -16,8 +16,13 @@ import models.Song;
  */
 public class Config {
 
-    public static final int backwardTime = 5000;
-    public static final int forwardTime = 5000;
+    public static final int BACKWARD_TIME = 5000;
+    public static final int FORWARD_TIME = 5000;
+
+    public static final String KEY_SEEKBAR_PROGRESS = "seekBarProgress";
+    public static final String KEY_BACKWARD_OR_FORWARD = "backwardOrForward";
+
+    public static final String ACTION_SEEK_MEDIA_PLAYER = "com.example.administrator.playmusic.action.SEEK_MEDIA_PLAYER";
     public static final String KEY_SONG_POSITION = "songPosition";
     public static final String KEY_CURRENT_TIME = "currentTime";
     public static final String KEY_PREVIOUS_OR_NEXT = "previousOrNext";

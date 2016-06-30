@@ -105,9 +105,21 @@ public class PlaySongActivity extends AppCompatActivity{
     }
 
     public void backward(View v) {
+        if(seekBar.getProgress() - Config.BACKWARD_TIME >= 0){
+            Intent backwardIntent = new Intent(Config.ACTION_SEEK_MEDIA_PLAYER);
+            backwardIntent.putExtra(Config.KEY_BACKWARD_OR_FORWARD, false); // false for backward
+            sendBroadcast(backwardIntent);
+            tvCurrentTime.setText(Config.getTextFormat(seekBar.getProgress() - Config.BACKWARD_TIME));
+        }
     }
 
     public void forward(View v) {
+        if(seekBar.getProgress() + Config.FORWARD_TIME <= seekBar.getMax()){
+            Intent forwardIntent = new Intent(Config.ACTION_SEEK_MEDIA_PLAYER);
+            forwardIntent.putExtra(Config.KEY_BACKWARD_OR_FORWARD, true); // true for forward
+            sendBroadcast(forwardIntent);
+            tvCurrentTime.setText(Config.getTextFormat(seekBar.getProgress() + Config.FORWARD_TIME));
+        }
     }
 
     private void setDefaultInfo() {
