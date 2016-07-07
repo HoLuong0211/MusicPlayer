@@ -125,7 +125,8 @@ public class PlaySongActivity extends AppCompatActivity implements SeekBar.OnSee
             Intent backwardIntent = new Intent(Config.ACTION_SEEK_MEDIA_PLAYER);
             backwardIntent.putExtra(Config.KEY_BACKWARD_OR_FORWARD, false); // false for backward
             sendBroadcast(backwardIntent);
-            tvCurrentTime.setText(Config.getTextFormat(seekBar.getProgress() - Config.BACKWARD_TIME));
+            seekBar.setProgress(seekBar.getProgress() - Config.BACKWARD_TIME);
+            tvCurrentTime.setText(Config.getTextFormat(seekBar.getProgress()));
         }
     }
 
@@ -134,7 +135,8 @@ public class PlaySongActivity extends AppCompatActivity implements SeekBar.OnSee
             Intent forwardIntent = new Intent(Config.ACTION_SEEK_MEDIA_PLAYER);
             forwardIntent.putExtra(Config.KEY_BACKWARD_OR_FORWARD, true); // true for forward
             sendBroadcast(forwardIntent);
-            tvCurrentTime.setText(Config.getTextFormat(seekBar.getProgress() + Config.FORWARD_TIME));
+            seekBar.setProgress(seekBar.getProgress() + Config.FORWARD_TIME);
+            tvCurrentTime.setText(Config.getTextFormat(seekBar.getProgress()));
         }
     }
 
